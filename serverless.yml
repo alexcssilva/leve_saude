@@ -1,0 +1,32 @@
+service: leve-saude-api
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+functions:
+  getSchedules:
+    handler: src/agenda/controller/agenda.controller.getSchedules
+    events:
+      - http:
+          path: /agendas
+          method: get
+          cors: true
+
+  createAppointment:
+    handler: src/agendamento/controller/agendamento.controller.createAppointment
+    events:
+      - http:
+          path: /agendamento
+          method: post
+          cors: true
+
+custom:
+  serverless-offline:
+    httpPort: 3000
