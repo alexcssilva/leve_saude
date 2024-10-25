@@ -5,3 +5,4 @@ coverage/
 .serverless/
 *.log
 .DS_Store
+.build/

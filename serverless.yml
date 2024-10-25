@@ -1,10 +1,16 @@
-service: leve-saude-api
+service: medical-scheduling-api
 
 provider:
   name: aws
   runtime: nodejs18.x
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
+  environment:
+    NODE_ENV: ${self:provider.stage}
+  apiGateway:
+    shouldStartNameWithService: true
+  memorySize: 256
+  timeout: 30
 
 plugins:
   - serverless-plugin-typescript
@@ -12,21 +18,46 @@ plugins:
 
 functions:
   getSchedules:
-    handler: src/agenda/controller/agenda.controller.getSchedules
+    handler: src/schedule/controller/ScheduleController.getSchedules
     events:
       - http:
-          path: /agendas
+          path: /schedule
           method: get
           cors: true
+          request:
+            parameters:
+              headers:
+                - Content-Type
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
 
   createAppointment:
-    handler: src/agendamento/controller/agendamento.controller.createAppointment
+    handler: src/appointment/controller/AppointmentController.createAppointment
     events:
       - http:
-          path: /agendamento
+          path: /appointment
           method: post
           cors: true
+          request:
+            parameters:
+              headers:
+                - Content-Type
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
 
 custom:
   serverless-offline:
     httpPort: 3000
+    noPrependStageInUrl: true
+
+package:
+  patterns:
+    - "!.git/**"
+    - "!node_modules/**"
+    - "!test/**"
+    - "!.env*"
+    - "!README.md"
