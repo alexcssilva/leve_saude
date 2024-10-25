@@ -3,6 +3,7 @@ import {
   IAppointmentRequest,
   IAppointmentResponse,
 } from "../interface/AppointmentInterface";
+import { mockAppointmentResponse } from "./../mocks/appointmentMock";
 
 export class AppointmentService {
   private scheduleService: ScheduleService;
@@ -12,8 +13,13 @@ export class AppointmentService {
   }
 
   public async createAgendamento(
-    data: IAppointmentRequest
+    data: IAppointmentRequest,
+    useMock: boolean = false
   ): Promise<IAppointmentResponse> {
+    if (useMock) {
+      return mockAppointmentResponse;
+    }
+
     const medico = await this.scheduleService.getDoctorById(data.medico_id);
 
     if (!medico) {
